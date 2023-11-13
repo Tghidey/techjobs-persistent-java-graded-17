@@ -1,7 +1,9 @@
 package org.launchcode.techjobs.persistent.models;
 
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
@@ -10,19 +12,30 @@ import java.util.List;
 @Entity
 public class Employer extends AbstractEntity {
 
-    @NotNull(message = "Location cannot be null")
-    @Size(min = 3, max = 255, message = "Location must be between 3 and 255 characters")
+    @NotBlank(message = "Location must not be blank")
+    @Size(max = 100, message = "Location must not be more than 100 characters")
     private String location;
 
-    // Default constructor
+    @OneToMany
+    @JoinColumn(name = "employer_id")
+    private final List<Job> jobs = new ArrayList<>();
+
     public Employer() {}
 
-    // Getters and setters
+    public Employer(String location) {
+        super();
+        this.location = location;
+    }
+
     public String getLocation() {
         return location;
     }
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public List<Job> getJobs() {
+        return jobs;
     }
 }

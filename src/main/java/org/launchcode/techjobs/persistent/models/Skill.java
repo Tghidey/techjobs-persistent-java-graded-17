@@ -1,20 +1,34 @@
 package org.launchcode.techjobs.persistent.models;
 
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.ManyToMany;
+import jakarta.validation.constraints.NotBlank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Skill extends AbstractEntity {
 
-    @NotNull(message = "Description cannot be null")
-    @Size(min = 3, max = 500, message = "Description must be between 3 and 500 characters")
+    @NotBlank
     private String description;
 
-    // Default constructor
+    @ManyToMany(mappedBy = "skills")
+    private final List<Job> jobs = new ArrayList<>();
+
     public Skill() {}
 
-    // Getters and setters
+    public Skill(String description) {
+        super();
+        this.description = description;
+//        this.jobs = jobs;
+    }
+
+
+    public List<Job> getJobs() {
+        return jobs;
+    }
+
     public String getDescription() {
         return description;
     }
