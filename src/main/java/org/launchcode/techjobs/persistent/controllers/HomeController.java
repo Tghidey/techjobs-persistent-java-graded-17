@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("add")
 public class HomeController {
 
     @Autowired
@@ -28,8 +27,13 @@ public class HomeController {
 
     @Autowired
     private SkillRepository skillRepository;
+    @RequestMapping ("/")
+    public String index(Model model) {
+        model.addAttribute("jobs", jobRepository.findAll());
+        return "index";
+    }
 
-    @GetMapping
+    @GetMapping("add")
     public String displayAddJobForm(Model model) {
         model.addAttribute("title", "Add Job");
         model.addAttribute(new Job());
@@ -38,7 +42,7 @@ public class HomeController {
         return "add";
     }
 
-    @PostMapping
+    @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
                                     Errors errors, Model model,
                                     @RequestParam int employerId,
@@ -67,4 +71,18 @@ public class HomeController {
         jobRepository.save(newJob);
         return "redirect:";
     }
+    @GetMapping("view/{jobId}")
+    public String displayViewJob(Model model, @PathVariable int jobId) {
+
+        Optional optJob = jobRepository.findById(jobId);
+        if (optJob.isPresent()) {
+            Job job = (Job) optJob.get();
+            model.addAttribute("job", job);
+            return "view";
+        } else {
+            return "redirect:/";
+        }
+
+    }
+
 }
